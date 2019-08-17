@@ -1,0 +1,33 @@
+- hosts: all
+  tasks:
+    - name: Disable firewall
+      systemd:
+        enabled: no
+        name: firewalld
+        state: stopped
+      become: yes
+    - name: Disable NetworkManager
+      systemd:
+        enabled: no
+        name: NetworkManager
+        state: stopped
+      become: yes
+    - name: Enable Network
+      systemd:
+        enabled: yes
+        name: network
+        state: started
+      become: yes
+    - name: Install Openstack release stein
+      package:
+        name: centos-release-openstack-stein
+        state: latest
+      become: yes
+    - name: Install Openstack packstack
+      package:
+        name: openstack-packstack
+        state: latest
+      become: yes
+    - name: Run Openstack packstack
+      shell: "packstack --allinone"
+      become: yes
